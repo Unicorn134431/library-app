@@ -1,0 +1,287 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #818cf8;
+  --accent: #f97316;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --dark: #1f2937;
+  --light: #f3f4f6;
+  --gray: #d1d5db;
+  --text: #111827;
+  --border: #e5e7eb;
+  --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #app {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1f2937 100%);
+  color: var(--text);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+[v-cloak] {
+  display: none;
+}
+
+/* ============ ЗАГОЛОВКИ ============ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 900;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* ============ КНОПКИ ============ */
+.btn-primary {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+
+.btn-secondary {
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  padding: 10px 16px;
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+.btn-success {
+  padding: 10px 16px;
+  background: var(--success);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-sm {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+}
+
+.btn-link:hover {
+  color: var(--primary);
+}
+
+/* ============ ФОРМЫ ============ */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #374151;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.3px;
+}
+
+input, select, textarea {
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transition);
+  background: white;
+  color: var(--text);
+}
+
+input::placeholder, textarea::placeholder {
+  color: #9ca3af;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* ============ ТАБЛИЦЫ ============ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', sans-serif;
+}
+
+th {
+  background: var(--light);
+  padding: 16px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+td {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+}
+
+tr:hover {
+  background: var(--light);
+}
+
+/* ============ УТИЛИТЫ ============ */
+.text-danger {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.text-success {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+/* ============ ТЕКСТОВЫЕ СТИЛИ ============ */
+.title-large {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.title-medium {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.title-small {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #6b7280;
+  letter-spacing: 0.3px;
+}
+
+.caption {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #9ca3af;
+  letter-spacing: 0.2px;
+}
