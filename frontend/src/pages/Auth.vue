@@ -135,16 +135,25 @@ const toggleLamp = () => {
   }
 }
 
+const API_URL = import.meta.env.VITE_API_URL  // <-- берём из .env
+
 const handleAuth = async () => {
   try {
     loading.value = true
     error.value = ''
     
-    const endpoint = mode.value === 'login' ? '/api/auth/login' : '/api/auth/register'
-    const response = await axios.post(`http://localhost:3000${endpoint}`, form.value)
+    const endpoint = mode.value === 'login'
+      ? '/auth/login'
+      : '/auth/register'
+
+    const response = await axios.post(
+      `${API_URL}${endpoint}`,
+      form.value
+    )
     
     localStorage.setItem('token', response.data.token)
     emit('login', response.data.user)
+
   } catch (e) {
     error.value = e.response?.data?.error || 'Ошибка при авторизации'
   } finally {

@@ -271,9 +271,11 @@ const formatDate = (date) => {
   return d.toLocaleDateString('ru-RU')
 }
 
+const API_URL = import.meta.env.VITE_API_URL  // <-- берём из .env
+
 const loadDashboard = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/admin/dashboard', {
+    const response = await axios.get(`${API_URL}/admin/dashboard`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     stats.value = response.data
@@ -284,7 +286,7 @@ const loadDashboard = async () => {
 
 const loadBooks = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/books', {
+    const response = await axios.get(`${API_URL}/books`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     allBooks.value = response.data
@@ -295,7 +297,7 @@ const loadBooks = async () => {
 
 const loadReservations = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/admin/reservations', {
+    const response = await axios.get(`${API_URL}/admin/reservations`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     allReservations.value = response.data
@@ -306,7 +308,7 @@ const loadReservations = async () => {
 
 const loadUsers = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/admin/users', {
+    const response = await axios.get(`${API_URL}/admin/users`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     allUsers.value = response.data
@@ -317,11 +319,17 @@ const loadUsers = async () => {
 
 const addBook = async () => {
   try {
-    await axios.post('http://localhost:3000/api/admin/books', newBook.value, {
+    await axios.post(`${API_URL}/admin/books`, newBook.value, {
       headers: { Authorization: `Bearer ${token}` }
     })
     showAddBookForm.value = false
-    newBook.value = { title: '', author: '', category: 'IT', image_url: '', total_copies: 5 }
+    newBook.value = { 
+      title: '', 
+      author: '', 
+      category: 'IT', 
+      image_url: '', 
+      total_copies: 5 
+    }
     await loadBooks()
   } catch (error) {
     console.error('Ошибка при добавлении книги:', error)
@@ -331,7 +339,7 @@ const addBook = async () => {
 const deleteBook = async (bookId) => {
   if (!confirm('Вы уверены?')) return
   try {
-    await axios.delete(`http://localhost:3000/api/admin/books/${bookId}`, {
+    await axios.delete(`${API_URL}/admin/books/${bookId}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     await loadBooks()
@@ -342,7 +350,8 @@ const deleteBook = async (bookId) => {
 
 const changeReservationStatus = async (reservationId, status) => {
   try {
-    await axios.put(`http://localhost:3000/api/admin/reservations/${reservationId}/status`, 
+    await axios.put(
+      `${API_URL}/admin/reservations/${reservationId}/status`,
       { status },
       { headers: { Authorization: `Bearer ${token}` } }
     )

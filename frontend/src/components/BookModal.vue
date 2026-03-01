@@ -7,7 +7,7 @@
 
       <div class="book-modal">
         <div class="book-image-large">
-          <img :src="book.image_url" :alt="book.title" onerror="this.src='https://via.placeholder.com/300x400'">
+          <img :src="book.image_url" :alt="book.title" @error="onImageError">
         </div>
 
         <div class="book-details">
@@ -30,7 +30,7 @@
             {{ book.description }}
           </div>
 
-          <!-- РЕЙТИНГ -->
+          <!-- Рейтинг -->
           <div class="rating-section">
             <h3>Рейтинг</h3>
             <div class="rating-display">
@@ -55,7 +55,7 @@
             </div>
           </div>
 
-          <!-- КНОПКИ ДЕЙСТВИЯ -->
+          <!-- Кнопки действия -->
           <div class="action-buttons">
             <button 
               v-if="user && book.available_copies > 0"
@@ -108,11 +108,37 @@ const isFavorite = ref(false)
 const isReserving = ref(false)
 const isReserved = ref(false) // отслеживаем бронирование
 
+const API_URL = import.meta.env.VITE_API_URL  // <-- берём URL из переменной окружения
+
+const onImageError = (e) => {
+  e.target.src = 'https://via.placeholder.com/300x400'
+}
+
+// Загрузка рейтинга и избранного при открытии модалки
+onMounted(async () => {
+  if (!token) return
+
+  try {
+    const ratingResponse = await axios.get(`${API_URL}/books/${props.book.id}/rating`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    if (ratingResponse.data.has_rating) userRating.value = ratingResponse.data.rating
+
+    const favResponse = await axios.get(`${API_URL}/books/favorites/check/${props.book.id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    isFavorite.value = favResponse.data.is_favorite
+  } catch (error) {
+    console.error('Ошибка при загрузке данных:', error)
+  }
+})
+
+// Оценка книги
 const rateBook = async (rating) => {
   if (!token) return
 
   try {
-    await axios.post(`http://localhost:3000/api/books/${props.book.id}/rating`, 
+    await axios.post(`${API_URL}/books/${props.book.id}/rating`, 
       { rating },
       { headers: { Authorization: `Bearer ${token}` } }
     )
@@ -122,35 +148,36 @@ const rateBook = async (rating) => {
   }
 }
 
+// Добавление/удаление из избранного
 const toggleFavorite = async () => {
   if (!token) return
 
   try {
     if (isFavorite.value) {
-      await axios.delete(`http://localhost:3000/api/books/favorites/${props.book.id}`, {
+      await axios.delete(`${API_URL}/books/favorites/${props.book.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
     } else {
-      await axios.post('http://localhost:3000/api/books/favorites/add',
+      await axios.post(`${API_URL}/books/favorites/add`,
         { book_id: props.book.id },
         { headers: { Authorization: `Bearer ${token}` } }
       )
     }
     isFavorite.value = !isFavorite.value
   } catch (error) {
-    console.error('Ошибка при добавлении в избранное:', error)
+    console.error('Ошибка при работе с избранным:', error)
   }
 }
 
+// Бронирование книги
 const reserveBook = async () => {
-  if (!token) return
+  if (!token || isReserving.value || isReserved.value) return
 
+  isReserving.value = true
   try {
-    isReserving.value = true
-    await axios.post('http://localhost:3000/api/reservations',
-      { book_id: props.book.id },
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
+    await axios.post(`${API_URL}/books/${props.book.id}/reserve`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
     isReserved.value = true
   } catch (error) {
     console.error('Ошибка при бронировании:', error)
@@ -159,31 +186,10 @@ const reserveBook = async () => {
   }
 }
 
+// Переход к авторизации
 const goToAuth = () => {
   emit('close')
 }
-
-onMounted(async () => {
-  if (!token) return
-
-  try {
-    const ratingResponse = await axios.get(
-      `http://localhost:3000/api/books/${props.book.id}/rating`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    if (ratingResponse.data.has_rating) {
-      userRating.value = ratingResponse.data.rating
-    }
-
-    const favResponse = await axios.get(
-      `http://localhost:3000/api/books/favorites/check/${props.book.id}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    isFavorite.value = favResponse.data.is_favorite
-  } catch (error) {
-    console.error('Ошибка при загрузке данных:', error)
-  }
-})
 </script>
 
 <style scoped>

@@ -55,11 +55,15 @@ const calculateProgress = (due_date) => {
   return Math.min((passed / total) * 100, 100)
 }
 
+const API_URL = import.meta.env.VITE_API_URL  // <-- берём URL из переменной окружения
+
 const returnBook = async (reservationId) => {
   try {
-    await axios.post(`http://localhost:3000/api/reservations/${reservationId}/return`, {}, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    await axios.post(
+      `${API_URL}/reservations/${reservationId}/return`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
     reservations.value = reservations.value.filter(r => r.id !== reservationId)
   } catch (error) {
     console.error('Ошибка при возврате:', error)
@@ -72,7 +76,7 @@ const goToCatalog = () => {
 
 onMounted(async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/reservations/user/my', {
+    const response = await axios.get(`${API_URL}/reservations/user/my`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     reservations.value = response.data

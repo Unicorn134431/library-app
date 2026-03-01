@@ -67,9 +67,11 @@ const filteredBooks = computed(() => {
   })
 })
 
+const API_URL = import.meta.env.VITE_API_URL  // <-- берём URL из .env
+
 onMounted(async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/books')
+    const response = await axios.get(`${API_URL}/books`)
     books.value = response.data
   } catch (error) {
     console.error('Ошибка при загрузке книг:', error)
