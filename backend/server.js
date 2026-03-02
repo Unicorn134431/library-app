@@ -6,20 +6,21 @@ dotenv.config();
 
 const app = express();
 
-// Настройка CORS
+// 1. CORS - САМЫМ ПЕРВЫМ!
 app.use(cors({
-  origin: true, // Разрешает запросы с любого origin, который прислал запрос
+  origin: 'https://library-app-production-62cf.up.railway.app', 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  credentials: true, // Важно для кук и авторизации
-  optionsSuccessStatus: 200 // Для старых браузеров и специфических preflight запросов
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
-// Важно: Добавь это ПЕРЕД твоими роутами!
+// 2. Обработка OPTIONS запросов (Preflight)
 app.options('*', cors());
+
+// 3. Остальные middleware
 app.use(express.json());
 
-// Routes
+// 4. Твои роуты
 const authRoutes = require('./routes/auth');
 const bookRoutes = require('./routes/books');
 const reservationRoutes = require('./routes/reservations');
@@ -32,15 +33,11 @@ app.use('/api/admin', adminRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('❌ Ошибка на сервере:', err.message);
   res.status(500).json({ error: 'Внутренняя ошибка сервера' });
 });
 
-// В самом низу server.js
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Сервер запущен!`);
-  console.log(`🌍 Доступен по порту: ${PORT}`);
-  console.log(`📦 БД подключена к порту: ${process.env.DB_PORT}`);
+  console.log(`🚀 Сервер запущен на порту: ${PORT}`);
 });
