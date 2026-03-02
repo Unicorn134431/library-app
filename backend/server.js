@@ -33,7 +33,7 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 
-// Важно: слушаем на '0.0.0.0', чтобы Railway мог прокинуть трафик
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🚀 Сервер реально запущен и слушает порт: ${PORT}`);
+  console.log(`🚀 Сервер запущен на порту: ${PORT}`);
+  console.log(`📡 База данных подключается через порт: ${process.env.DB_PORT}`);
 });
