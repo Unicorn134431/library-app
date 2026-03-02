@@ -8,9 +8,9 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: '*', // Разрешить всем (для теста)
+  origin: 'https://library-app-production-62cf.up.railway.app', 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  credentials: true
 }));
 app.use(express.json());
 
@@ -33,7 +33,7 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 Сервер запущен на http://localhost:${PORT}`);
-  console.log(`📚 Убедитесь, что MySQL запущен!\n`);
+// Важно: слушаем на '0.0.0.0', чтобы Railway мог прокинуть трафик
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n🚀 Сервер реально запущен и слушает порт: ${PORT}`);
 });
