@@ -31,9 +31,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Внутренняя ошибка сервера' });
 });
 
+// В самом низу server.js
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Сервер запущен на порту: ${PORT}`);
-  console.log(`📡 База данных подключается через порт: ${process.env.DB_PORT}`);
+  console.log(`🚀 Сервер запущен!`);
+  console.log(`🌍 Доступен по порту: ${PORT}`);
+  console.log(`📦 БД подключена к порту: ${process.env.DB_PORT}`);
 });
