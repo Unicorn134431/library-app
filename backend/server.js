@@ -20,6 +20,10 @@ app.options('*', cors());
 // 3. Остальные middleware
 app.use(express.json());
 
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'Бэкенд видит фронтенд!' });
+});
+
 // 4. Твои роуты
 const authRoutes = require('./routes/auth');
 const bookRoutes = require('./routes/books');
