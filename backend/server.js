@@ -39,16 +39,3 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🌍 Доступен по порту: ${PORT}`);
   console.log(`📦 БД подключена к порту: ${process.env.DB_PORT}`);
 });
-
-// Добавь это сразу после создания подключения к БД
-pool.on('connection', () => {
-  console.log('✅ Новое соединение с БД создано');
-});
-
-pool.query('SELECT 1', (err) => {
-  if (err) {
-    console.error('❌ ОШИБКА ПОДКЛЮЧЕНИЯ К MYSQL:', err.message);
-  } else {
-    console.log('✅ Тестовый запрос к БД прошел успешно!');
-  }
-});
