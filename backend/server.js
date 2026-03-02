@@ -6,12 +6,17 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// Настройка CORS
 app.use(cors({
-  origin: 'https://library-app-production-62cf.up.railway.app', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  origin: true, // Разрешает запросы с любого origin, который прислал запрос
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  credentials: true, // Важно для кук и авторизации
+  optionsSuccessStatus: 200 // Для старых браузеров и специфических preflight запросов
 }));
+
+// Важно: Добавь это ПЕРЕД твоими роутами!
+app.options('*', cors());
 app.use(express.json());
 
 // Routes
