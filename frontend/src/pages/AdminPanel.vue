@@ -134,8 +134,8 @@
         </form>
       </div>
 
-      <div v-if="editingBook" class="add-book-form" style="border-left: 4px solid #6366f1;">
-        <h3>Редактирование: {{ editingBook.title }}</h3>
+      <div v-if="editingBook" class="add-book-form" style="border-left: 4px solid #6366f1; background: #f8fafc;">
+        <h3>📝 Редактирование: {{ editingBook.title }}</h3>
         <form @submit.prevent="updateBook">
           <div class="form-row">
             <div class="form-group">
@@ -159,13 +159,23 @@
               </select>
             </div>
             <div class="form-group">
-              <label>Количество копий (Всего)</label>
+              <label>Всего книг</label>
               <input v-model.number="editingBook.total_copies" type="number" min="1">
             </div>
           </div>
 
+          <div class="form-row">
+            <div class="form-group">
+              <label>Доступно для выдачи</label>
+              <input v-model.number="editingBook.available_copies" type="number" min="0">
+            </div>
+            <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 10px; color: #64748b; font-size: 0.85rem;">
+              <span>* Измените "Доступно", чтобы пользователи могли брать книгу</span>
+            </div>
+          </div>
+
           <div class="form-buttons">
-            <button type="submit" class="btn-primary">
+            <button type="submit" class="btn-primary" style="background: #6366f1;">
               <i class="fas fa-check"></i> Сохранить изменения
             </button>
             <button type="button" @click="editingBook = null" class="btn-secondary">
@@ -403,31 +413,36 @@ const changeReservationStatus = async (reservationId, status) => {
   }
 }
 
-// Открывает режим редактирования
+// Когда нажимаем на "карандаш"
 const editBook = (book) => {
-  // Делаем копию объекта, чтобы не менять оригинал сразу в таблице
-  editingBook.value = { ...book }
+  editingBook.value = { ...book } // Копируем данные книги в форму
 }
 
-// Отправляет изменения на сервер
+// Когда нажимаем "Сохранить изменения"
 const updateBook = async () => {
   try {
     const bookData = { ...editingBook.value };
     
-    // Превращаем в числа, чтобы бэкенд не ругался
-    bookData.total_copies = parseInt(bookData.total_copies);
-    // Если у тебя в базе есть available_copies, их тоже стоит проверить
-    
+    // Превращаем ввод в числа
+    bookData.total_copies = parseInt(bookData.total_copies) || 0;
+    bookData.available_copies = parseInt(bookData.available_copies) || 0;
+
+    // Простая проверка
+    if (bookData.available_copies > bookData.total_copies) {
+      alert('Доступных книг не может быть больше, чем всего!');
+      return;
+    }
+
     await axios.put(`${API_URL}/admin/books/${bookData.id}`, bookData, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
     editingBook.value = null; // Закрываем форму
-    await loadBooks(); // Обновляем список
+    await loadBooks(); // Обновляем таблицу
     alert('Книга обновлена!');
   } catch (error) {
-    console.error('Ошибка при обновлении:', error);
-    alert('Ошибка при сохранении');
+    console.error('Ошибка:', error);
+    alert('Не удалось сохранить');
   }
 }
 
