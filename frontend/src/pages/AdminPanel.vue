@@ -134,6 +134,47 @@
         </form>
       </div>
 
+      <div v-if="editingBook" class="add-book-form" style="border-left: 4px solid #6366f1;">
+        <h3>Редактирование: {{ editingBook.title }}</h3>
+        <form @submit.prevent="updateBook">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Название</label>
+              <input v-model="editingBook.title" required>
+            </div>
+            <div class="form-group">
+              <label>Автор</label>
+              <input v-model="editingBook.author" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Категория</label>
+              <select v-model="editingBook.category">
+                <option value="IT">IT</option>
+                <option value="Проза">Проза</option>
+                <option value="Наука">Наука</option>
+                <option value="Дизайн">Дизайн</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Количество копий (Всего)</label>
+              <input v-model.number="editingBook.total_copies" type="number" min="1">
+            </div>
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-check"></i> Сохранить изменения
+            </button>
+            <button type="button" @click="editingBook = null" class="btn-secondary">
+              Отмена
+            </button>
+          </div>
+        </form>
+      </div>
+
       <!-- ТАБЛИЦА КНИГ -->
       <table v-if="allBooks.length > 0">
         <thead>
@@ -265,6 +306,7 @@ const newBook = ref({
   image_url: '',
   total_copies: 5
 })
+const editingBook = ref(null) // Здесь будет храниться книга, которую мы правим
 
 const formatDate = (date) => {
   const d = new Date(date)
@@ -361,8 +403,32 @@ const changeReservationStatus = async (reservationId, status) => {
   }
 }
 
+// Открывает режим редактирования
 const editBook = (book) => {
-  console.log('Редактирование:', book)
+  // Делаем копию объекта, чтобы не менять оригинал сразу в таблице
+  editingBook.value = { ...book }
+}
+
+// Отправляет изменения на сервер
+const updateBook = async () => {
+  try {
+    const bookData = { ...editingBook.value };
+    
+    // Превращаем в числа, чтобы бэкенд не ругался
+    bookData.total_copies = parseInt(bookData.total_copies);
+    // Если у тебя в базе есть available_copies, их тоже стоит проверить
+    
+    await axios.put(`${API_URL}/admin/books/${bookData.id}`, bookData, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    editingBook.value = null; // Закрываем форму
+    await loadBooks(); // Обновляем список
+    alert('Книга обновлена!');
+  } catch (error) {
+    console.error('Ошибка при обновлении:', error);
+    alert('Ошибка при сохранении');
+  }
 }
 
 onMounted(async () => {
